@@ -342,3 +342,29 @@ def get_retweeters(status_id):
     
     return response
 
+def search_tweets_by_article_title(article_title, start_date, end_date):
+    # authenticate with end point
+    bearer_token = os.environ.get("BEARER_TOKEN")        
+    url = 'https://api.twitter.com/2/tweets/search/all?query=' + article_title + '&max_results=20&start_time=' + start_date + 'T00%3A00%3A00Z&end_time=' + end_date + 'T11%3A59%3A59Z&tweet.fields=author_id,conversation_id,public_metrics'
+    print(url)
+    
+    # submit GET request - submit a query to the API      
+    response = requests.request("GET", 
+                                url, 
+                                headers = {"Authorization": "Bearer {}".format(bearer_token)})   
+    
+    return response
+
+def search_tweets_by_article_title_and_user(from_user, article_title, start_date, end_date):
+    # authenticate with end point
+    bearer_token = os.environ.get("BEARER_TOKEN")        
+    url = 'https://api.twitter.com/2/tweets/search/all?query=' + article_title + ' from%3A' + from_user + '&max_results=20&start_time=' + start_date + 'T00%3A00%3A00Z&end_time=' + end_date + 'T11%3A59%3A59Z&tweet.fields=author_id,conversation_id,public_metrics'
+    print(url)
+    
+    # submit GET request - submit a query to the API      
+    response = requests.request("GET", 
+                                url, 
+                                headers = {"Authorization": "Bearer {}".format(bearer_token)})   
+    
+    return response
+
