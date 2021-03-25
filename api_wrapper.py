@@ -302,3 +302,43 @@ def extract_el(data):
     el.reset_index(drop = True, inplace = True)
 
     return el
+
+def rehydrate_status_ids(ids, token = 0):
+    # authenticate with end point
+    bearer_token = os.environ.get("BEARER_TOKEN")
+    tweet_fields = "tweet.fields=author_id,conversation_id,public_metrics"
+    ids = [str(id) for id in ids]
+    ids = "ids=" + ",".join(ids)        
+    url = "https://api.twitter.com/2/tweets?{}&{}".format(ids, tweet_fields)
+    
+    # submit GET request - submit a query to the API      
+    response = requests.request("GET", url, 
+                                headers = {"Authorization": "Bearer {}".format(bearer_token)})   
+    
+    return response
+
+def rehydrate_conversation(conversation_id):
+    # authenticate with end point
+    bearer_token = os.environ.get("BEARER_TOKEN")
+    tweet_fields = "tweet.fields=lang,author_id,conversation_id"
+    url = 'https://api.twitter.com/2/tweets/search/recent?query=conversation_id:' + conversation_id + '&{}'.format(tweet_fields) + '&max_results=100'
+    
+    # submit GET request - submit a query to the API      
+    response = requests.request("GET", url, 
+                                headers = {"Authorization": "Bearer {}".format(bearer_token)})   
+    
+    return response
+
+def get_retweeters(status_id):
+    # authenticate with end point
+    bearer_token = os.environ.get("BEARER_TOKEN")
+    tweet_fields = "tweet.fields=lang,author_id,conversation_id"
+    url = 'https://api.twitter.com/1.1/statuses/retweeters/ids.json?id=' + status_id + '&count=100&stringify_ids=true'
+    print(url)
+    
+    # submit GET request - submit a query to the API      
+    response = requests.request("GET", url, 
+                                headers = {"Authorization": "Bearer {}".format(bearer_token)})   
+    
+    return response
+
